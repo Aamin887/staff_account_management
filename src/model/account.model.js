@@ -1,45 +1,22 @@
 const mongoose = require("mongoose");
 
-const userSchema = mongoose.Schema(
+const accountSchema = mongoose.Schema(
   {
-    title: {
-      type: String,
-      required: [true, "Please add a title"],
+    user: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
     },
-    firstName: {
+    password: {
       type: String,
-      required: [true, "Please enter a firstname value"],
+      required: [true, "Please enter a password"],
     },
-    middleName: {
+    accountType: {
       type: String,
-      default: "",
-    },
-    lastName: {
-      type: String,
-      required: [true, "Please enter a lastname value"],
-    },
-    department: {
-      type: String,
-      required: [true, "Please enter a department"],
-    },
-    employmentStatus: {
-      type: String,
-      required: [true, "Please enter an employment"],
-    },
-    staffId: {
-      type: String,
-      default: "",
+      required: [true, "Please select type of account"],
     },
     status: {
       type: String,
       default: "pending",
-    },
-    updates: {
-      type: [String],
-    },
-    password: {
-      type: String,
-      required: [true, "Please enter a password value"],
     },
   },
   {
@@ -47,4 +24,4 @@ const userSchema = mongoose.Schema(
   }
 );
 
-module.exports = mongoose.model("Account", userSchema);
+module.exports = mongoose.model("Account", accountSchema);

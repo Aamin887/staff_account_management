@@ -5,9 +5,13 @@ const errorHandler = require("./middleware/errorHandler.middleware");
 const cors = require("cors");
 const dbConnect = require("./config/db.connection");
 const corsOptions = require("./config/cors.options");
-const PORT = process.env.PORT || 5000;
+const { userAuth } = require("./middleware/auth.middleware");
+const cookieParser = require("cookie-parser");
+const PORT = process.env.PORT || 5500;
 
 const app = express();
+
+app.use(cookieParser());
 
 dbConnect();
 
@@ -23,16 +27,16 @@ app.use(
 );
 
 // root routes
-app.use("/", require("./routes/root.routes"));
+app.use("/api", require("./routes/root.routes"));
 
 // authentication routes
 app.use("/api/auth", require("./routes/api/auth.routes"));
 
 // users routes
-app.use("/api/v1/users", require("./routes/v1/users.routes"));
+app.use("/api/v1/users", userAuth, require("./routes/v1/users.routes"));
 
 // accounts routes
-app.use("/api/v1/accounts", require("./routes/v1/account.routes"));
+app.use("/api/v1/accounts", userAuth, require("./routes/v1/account.routes"));
 
 app.use("*", (req, res) => {
   res.status(404);

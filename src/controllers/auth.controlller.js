@@ -1,25 +1,90 @@
 const authService = require("../services/auth.services.js");
-const asyncWrapper = require("../utils/asyncWrapper.js");
+const asyncHandler = require("express-async-handler");
 
-const register = asyncWrapper((req, res) => {
-  const { email, password, password1 } = req.body;
+/**
+ * @Desc     Register user
+ * @Route   POST /api/auth/signup
+ * @Access  Public
+ */
+const register = asyncHandler(async (req, res) => {
+  const {
+    title,
+    firstNames,
+    lastName,
+    staffId,
+    department,
+    employmentStatus,
+    email,
+    password,
+    password1,
+  } = req.body;
 
-  console.log(req.body);
-
-  if (!email || !password || !password1) {
+  if (
+    !firstNames ||
+    !lastName ||
+    !email ||
+    !password ||
+    !password1 ||
+    !employmentStatus ||
+    !department ||
+    !title
+  ) {
+    res.status(400);
     throw new Error("Fill in all fields");
   }
 
-  const userRegister = authService.register();
-  res.send(userRegister);
+  if (password !== password1) {
+    res.status(400);
+    throw new Error("Passwords do not match");
+  }
+
+  const formData = {
+    title,
+    firstNames,
+    lastName,
+    staffId,
+    department,
+    employmentStatus,
+    email,
+    password,
+  };
+
+  const userRegister = await authService.register(res, formData);
+
+  res.json({ userRegister });
 });
 
-const login = (req, res) => {
-  const userLogin = authService.login();
-  res.send(userLogin);
-};
+/**
+ * @Desc    Login user
+ * @Route   POST /api/auth/login
+ * @Access  Public
+ */
+const login = asyncHandler(async (req, res) => {
+  const { email, password } = req.body;
+
+  if (!email && !password) {
+    res.status(400);
+    throw new Error("Fill in all form fields");
+  }
+
+  const userLogin = await authService.login(res, { email, password });
+
+  res.json({ userLogin });
+});
+
+/**
+ * @Desc    Logout user
+ * @Route   POST /api/auth/logout
+ * @Access  Public
+ */
+const logout = asyncHandler(async (req, res) => {
+  const userLogout = authService.logout(res);
+
+  res.json(userLogout);
+});
 
 module.exports = {
   register,
   login,
+  logout,
 };
