@@ -27,7 +27,7 @@ app.use(
 );
 
 // root routes
-app.use("/api", require("./routes/root.routes"));
+app.use("/", require("./routes/root.routes"));
 
 // authentication routes
 app.use("/api/auth", require("./routes/api/auth.routes"));
@@ -55,3 +55,5 @@ app.use(errorHandler);
 app.listen(PORT, () => {
   console.log(`Server is active on port: ${PORT}`);
 });
+
+module.exports = app;
