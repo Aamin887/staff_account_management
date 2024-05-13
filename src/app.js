@@ -2,6 +2,7 @@ const dotenv = require("dotenv").config();
 const path = require("path");
 const express = require("express");
 const errorHandler = require("./middleware/errorHandler.middleware");
+const rateLimit = require("./middleware/ratelimiter.middleware");
 const cors = require("cors");
 const dbConnect = require("./config/db.connection");
 const corsOptions = require("./config/cors.options");
@@ -29,6 +30,7 @@ app.use(
 // root routes
 app.use("/", require("./routes/root.routes"));
 
+app.use(rateLimit);
 // authentication routes
 app.use("/api/auth", require("./routes/api/auth.routes"));
 
