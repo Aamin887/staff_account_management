@@ -1,5 +1,6 @@
 const dotenv = require("dotenv").config();
 const path = require("path");
+const apicache = require("apicache");
 const express = require("express");
 const errorHandler = require("./middleware/errorHandler.middleware");
 const rateLimit = require("./middleware/ratelimiter.middleware");
@@ -9,6 +10,7 @@ const corsOptions = require("./config/cors.options");
 const { userAuth } = require("./middleware/auth.middleware");
 const cookieParser = require("cookie-parser");
 const PORT = process.env.PORT || 5500;
+const cache = apicache.middleware;
 
 const app = express();
 
@@ -26,6 +28,9 @@ app.use(
     extended: false,
   })
 );
+
+// cache
+app.use(cache("20 minutes"));
 
 // root routes
 app.use("/", require("./routes/root.routes"));
