@@ -1,5 +1,6 @@
 const authService = require("../services/auth.services.js");
 const asyncHandler = require("express-async-handler");
+const mailer = require("../utils/mailer.js");
 
 /**
  * @Desc     Register user
@@ -61,6 +62,8 @@ const register = asyncHandler(async (req, res) => {
  */
 const login = asyncHandler(async (req, res) => {
   const { email, password } = req.body;
+
+  mailer();
 
   if (!email && !password) {
     res.status(400);

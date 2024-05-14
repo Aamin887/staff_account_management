@@ -1,18 +1,30 @@
 const dotenv = require("dotenv").config();
 const path = require("path");
 const apicache = require("apicache");
+const cookieParser = require("cookie-parser");
+const cors = require("cors");
 const express = require("express");
+const swaggerUi = require("swagger-ui-express");
 const errorHandler = require("./middleware/errorHandler.middleware");
 const rateLimit = require("./middleware/ratelimiter.middleware");
-const cors = require("cors");
 const dbConnect = require("./config/db.connection");
 const corsOptions = require("./config/cors.options");
 const { userAuth } = require("./middleware/auth.middleware");
-const cookieParser = require("cookie-parser");
+const swaggerSpec = require("./config/swagger.config");
+
 const PORT = process.env.PORT || 5500;
-const cache = apicache.middleware;
+// const cache = apicache.middleware;
 
 const app = express();
+
+// swagger docs
+app.use(
+  "/api-docs",
+  swaggerUi.serve,
+  swaggerUi.setup(swaggerSpec, {
+    explorer: true,
+  })
+);
 
 app.use(cookieParser());
 
@@ -29,9 +41,6 @@ app.use(
   })
 );
 
-// cache
-app.use(cache("20 minutes"));
-
 // root routes
 app.use("/", require("./routes/root.routes"));
 
@@ -40,10 +49,20 @@ app.use(rateLimit);
 app.use("/api/auth", require("./routes/api/auth.routes"));
 
 // users routes
-app.use("/api/v1/users", userAuth, require("./routes/v1/users.routes"));
+app.use(
+  "/api/v1/users",
+  // cache("5 minutes"),
+  userAuth,
+  require("./routes/v1/users.routes")
+);
 
 // accounts routes
-app.use("/api/v1/accounts", userAuth, require("./routes/v1/account.routes"));
+app.use(
+  "/api/v1/accounts",
+  // cache("5 minutes"),
+  userAuth,
+  require("./routes/v1/account.routes")
+);
 
 app.use("*", (req, res) => {
   res.status(404);
