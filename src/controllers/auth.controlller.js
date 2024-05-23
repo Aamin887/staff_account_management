@@ -52,6 +52,8 @@ const register = asyncHandler(async (req, res) => {
 
   const userRegister = await authService.register(res, formData);
 
+  mailer(email, firstNames);
+
   res.json({ userRegister });
 });
 
@@ -62,8 +64,6 @@ const register = asyncHandler(async (req, res) => {
  */
 const login = asyncHandler(async (req, res) => {
   const { email, password } = req.body;
-
-  mailer();
 
   if (!email && !password) {
     res.status(400);
@@ -82,6 +82,8 @@ const login = asyncHandler(async (req, res) => {
  */
 const logout = asyncHandler(async (req, res) => {
   const userLogout = authService.logout(res);
+
+  res.status(200);
 
   res.json(userLogout);
 });

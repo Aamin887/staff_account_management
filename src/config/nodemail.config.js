@@ -9,6 +9,7 @@ const mailTransporter = nodemailer.createTransport({
     user: process.env.MAILER_USER,
     pass: process.env.MAILER_PASS,
   },
+  logger: true,
 });
 
 module.exports = mailTransporter;

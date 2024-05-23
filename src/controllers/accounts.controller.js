@@ -21,7 +21,7 @@ const createAccount = asyncHandler(async (req, res) => {
     password,
   };
 
-  const newAccount = await accountService.createAccount(formData);
+  const newAccount = await accountService.createAccount(res, formData);
 
   res.json({ newAccount });
 });
@@ -35,9 +35,11 @@ const getUserAccounts = asyncHandler(async (req, res) => {
   const userId = req.user._id;
 
   if (!userId) {
+    res.status(404);
     throw new Error("no users id available");
   }
-  const userAccounts = await accountService.getUserAccounts(userId);
+  const userAccounts = await accountService.getUserAccounts(res, userId);
+
   res.json(userAccounts);
 });
 
@@ -52,6 +54,7 @@ const updateAccount = asyncHandler(async (req, res) => {
   const formData = req.body;
 
   const updatedAccount = await accountService.updateAccount(
+    res,
     userId,
     accountId,
     formData

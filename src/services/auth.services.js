@@ -18,6 +18,7 @@ const register = async (res, formData) => {
   const checkUserExists = await User.findOne({ email });
 
   if (checkUserExists) {
+    res.status(409);
     throw new Error("User already registered");
   }
 
@@ -39,15 +40,16 @@ const register = async (res, formData) => {
   const newUser = await User.create(userData);
 
   if (!newUser) {
+    res.status(400);
     throw new Error("unable to create new user");
   }
-
-  console.log(newUser);
 
   await createToken(res, {
     id: newUser._id,
     email: newUser.email,
   });
+
+  res.status(201);
 
   return {
     userName: newUser.userName,
@@ -62,23 +64,25 @@ const login = async (res, formData) => {
   const checkUser = await User.findOne({ email });
 
   if (!checkUser) {
+    res.status(404);
     throw new Error("user not found");
   }
 
   const checkPassword = decryptPassword(password, checkUser.password);
 
   if (checkPassword) {
-    const token = createToken(res, {
+    createToken(res, {
       id: checkUser._id,
       email: checkUser.email,
     });
-
+    res.status(202);
     return {
       userName: checkUser.userName,
       id: checkUser._id,
       email: checkUser.email,
     };
   } else {
+    res.status(401);
     throw new Error("incorrect credentials");
   }
 };
@@ -89,6 +93,8 @@ const logout = (res) => {
     sameSite: "strict", // Prevent CSRF attacks
     maxAge: new Date(0), // 0 days
   });
+
+  res.status(200);
 
   return { msg: "logout successful" };
 };

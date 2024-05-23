@@ -15,13 +15,13 @@ const errorHandler = (err, req, res, next) => {
     res.status(statusCode).json({
       name: err.name,
       message: err.message,
-      stact: process.env.NODE_ENV === "development" ? err.stack : null,
+      stack: process.env.NODE_ENV === "development" ? err.stack : null,
     });
   }
 
   res.status(statusCode).json({
     message: err.message,
-    stact: process.env.NODE_ENV === "development" ? err.stack : null,
+    stack: process.env.NODE_ENV === "development" ? err.stack : null,
   });
 };
 

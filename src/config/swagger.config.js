@@ -17,8 +17,12 @@ const swaggerDefinition = {
   },
   servers: [
     {
-      url: "url: http://localhost:3000",
+      url: "http://localhost:5500/api",
       description: "Development server",
+    },
+    {
+      url: "url: https://staff-account-manager-lwhvn8hjk-aamin887s-projects.vercel.app/api/v1/users",
+      description: "Production server",
     },
   ],
 };
