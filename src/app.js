@@ -17,6 +17,9 @@ const PORT = process.env.PORT || 5500;
 
 const app = express();
 
+// database connection
+dbConnect();
+
 // swagger docs
 app.use(
   "/api-docs",
@@ -28,13 +31,12 @@ app.use(
 
 app.use(cookieParser());
 
-dbConnect();
-
 app.use(cors(corsOptions));
 
 app.use(express.static(path.join(__dirname, "..", "public")));
 
 app.use(express.json());
+
 app.use(
   express.urlencoded({
     extended: false,
@@ -44,7 +46,9 @@ app.use(
 // root routes
 app.use("/", require("./routes/root.routes"));
 
+// limits users from sending more than 60 request per minute
 app.use(rateLimit);
+
 // authentication routes
 app.use("/api/auth", require("./routes/api/auth.routes"));
 

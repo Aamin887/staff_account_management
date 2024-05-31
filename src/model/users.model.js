@@ -41,6 +41,10 @@ const userSchema = mongoose.Schema(
       minLength: 8,
       required: [true, "Please enter a password"],
     },
+    refreshToken: {
+      type: String,
+      default: "",
+    },
   },
   {
     timestamps: true,
